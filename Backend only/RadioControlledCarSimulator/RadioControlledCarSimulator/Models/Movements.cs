@@ -1,11 +1,8 @@
-﻿
-namespace RadioControlledCarSimulator.Models;
-
+﻿namespace RadioControlledCarSimulator.Models;
 public enum Movements
 {
-    None,
-    Left,
-    Right,
-    Forward,
-    Backward
+    L,
+    R,
+    F,
+    B
 }

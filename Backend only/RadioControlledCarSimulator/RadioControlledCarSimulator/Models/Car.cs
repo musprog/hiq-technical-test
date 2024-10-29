@@ -1,5 +1,5 @@
 ﻿
-using RadioControlledCarSimulator.Extensions;
+using RadioControlledCarSimulator.Utilities;
 
 namespace RadioControlledCarSimulator.Models;
 public class Car
@@ -8,83 +8,97 @@ public class Car
     public int Y { get; private set; }
     public Directions Direction { get; private set; }
 
-    private readonly Room room;
-
-    public event EventHandler<MovementEvents>? CarEvents;
-
+    private readonly Room _room;
 
     public Car(int x, int y, Directions direction, Room room)
     {
         X = x;
         Y = y;
         Direction = direction;
-        this.room = room;
+        _room = room;
     }
 
-    private bool IsWithinRoomRange(int x, int y) => x > 0 && x < room.Width && y > 0 && y < room.Height;
+    public bool CarStartPosition()
+    {
+        return _room.IsWithinRoomRange(X, Y);
+    }
 
+    /// <summary>
+    /// Moves the car forward in the current direction.
+    /// </summary>
+    /// <returns>True if the car successfully moved forward, false otherwise.</returns>
     public bool MoveForward()
     {
         // Calculate new position based on the current direction
         (int newX, int newY) = Direction switch
         {
-            Directions.North => (X, Y - 1),
-            Directions.East => (X + 1, Y),
-            Directions.South => (X, Y + 1),
-            Directions.West => (X - 1, Y),
+            Directions.N => (X, Y + 1),
+            Directions.E => (X + 1, Y),
+            Directions.S => (X, Y - 1),
+            Directions.W => (X - 1, Y),
             _ => (X, Y) // Default case, no movement
         };
 
-        // Check if the new position is within room range
-        bool success = IsWithinRoomRange(newX, newY);
+        bool reslut = _room.IsWithinRoomRange(newX, newY);
 
-        // Update position only if within room rang
-        if (success)
+        if (reslut)
         {
-            (X, Y) = (newX, newY);
+            X = newX;
+            Y = newY;
+            
+            SimulationIO.CarMoving(reslut, "forward", X, Y, Direction);
         }
-
-        // Raise the Car movement event
-        CarEvents?.Invoke(this, new MovementEvents(X, Y, Movements.Forward, Direction, success));
-
-        return success;
+        
+        return reslut;
     }
 
+    /// <summary>
+    /// Moves the car backward in the opposite direction.
+    /// </summary>
+    /// <returns>True if the car successfully moved backward, false otherwise.</returns>
     public bool MoveBackward()
     {
         // Calculate new position based on the current direction
         (int newX, int newY) = Direction switch
         {
-            Directions.North => (X, Y + 1),
-            Directions.East => (X - 1, Y),
-            Directions.South => (X, Y - 1),
-            Directions.West => (X + 1, Y),
+            Directions.N => (X, Y - 1),
+            Directions.E => (X - 1, Y),
+            Directions.S => (X, Y + 1),
+            Directions.W => (X + 1, Y),
             _ => (X, Y) // Default case, no movement
         };
 
-        // Check if the new position is within room rang
-        bool success = IsWithinRoomRange(newX, newY);
+        // Check if the new position is within room range
+        bool success = _room.IsWithinRoomRange(newX, newY);
 
-        // Update position only if within room rang
+        // Update position only if within room range
         if (success)
         {
-            (X, Y) = (newX, newY);
+            X = newX;
+            Y = newY;
+
+            SimulationIO.CarMoving(success, "backward", X, Y, Direction);
         }
-
-        // Raise the Car movement event
-        CarEvents?.Invoke(this, new MovementEvents(X, Y, Movements.Backward, Direction, success));
-
+        
         return success;
     }
 
-    public void TurnLeft()
+    /// <summary>
+    /// Turns the car to the left by 90 degrees.
+    /// </summary>
+    public bool TurnLeft()
     {
         ChangeDirection(-1); // -1 for left turn
+        return true;
     }
 
-    public void TurnRight()
+    /// <summary>
+    /// Turns the car to the right by 90 degrees.
+    /// </summary>
+    public bool TurnRight()
     {
         ChangeDirection(1); // 1 for right turn
+        return true;
     }
 
     private void ChangeDirection(int directionChange)
@@ -93,25 +107,60 @@ public class Car
         {
             -1 => Direction switch
             {
-                Directions.North => Directions.West,
-                Directions.East => Directions.North,
-                Directions.South => Directions.East,
-                Directions.West => Directions.South,
+                Directions.N => Directions.W,
+                Directions.E => Directions.N,
+                Directions.S => Directions.E,
+                Directions.W => Directions.S,
                 _ => Direction
             },
             1 => Direction switch
             {
-                Directions.North => Directions.East,
-                Directions.East => Directions.South,
-                Directions.South => Directions.West,
-                Directions.West => Directions.North,
+                Directions.N => Directions.E,
+                Directions.E => Directions.S,
+                Directions.S => Directions.W,
+                Directions.W => Directions.N,
                 _ => Direction
             },
             _ => Direction
         };
 
-        // Raise the Car movement event
-        CarEvents?.Invoke(this, new MovementEvents(X, Y, directionChange == -1 ? Movements.Left : Movements.Right, Direction, true));
+        string Side = directionChange == 1 ? "right" : "left";
+
+        SimulationIO.CarTurning(Side, X, Y, Direction);
     }
 
+    public Task Draw()
+    {
+        Task task = Task.Delay(1);
+        for (int y = _room.Height - 1; y >= 0; y--)
+        {
+            for (int x = 0; x < _room.Width; x++)
+            {
+                if (x == X && y == Y)
+                {
+                    Console.Write(Direction switch
+                    {
+                        Directions.N => "↑ ",
+                        Directions.E => "→ ",
+                        Directions.S => "↓ ",
+                        Directions.W => "← ",
+                        _ => "C "
+                    });
+                }
+                else
+                {
+                    Console.Write(". ");
+                }
+            }
+            Console.WriteLine();
+        }
+        Console.WriteLine();
+
+        return Task.CompletedTask;
+    }
+
+    public override string ToString()
+    {
+        return $"Position: ({X}, {Y}), Heading: {Direction}";
+    }
 }

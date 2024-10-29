@@ -1,16 +1,16 @@
 ﻿
-using RadioControlledCarSimulator.Interface;
+using RadioControlledCarSimulator.Interfaces;
 using RadioControlledCarSimulator.Models;
 
 namespace RadioControlledCarSimulator.Commands;
 public class TurnLeftCommand : ICommand
 {
-    private Car _car;
-
+    private readonly Car _car;
     public TurnLeftCommand(Car car) => _car = car;
-
-    public void Execute()
+    public bool Execute()
     {
-        throw new NotImplementedException();
+        var completed = _car.TurnLeft();
+        if (completed) _car.Draw();
+        return completed;
     }
 }

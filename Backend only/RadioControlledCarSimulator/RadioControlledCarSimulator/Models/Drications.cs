@@ -2,9 +2,8 @@
 namespace RadioControlledCarSimulator.Models;
 public enum Directions
 {
-    None,
-    North,
-    East,
-    West,
-    South
+    N,
+    E,
+    W,
+    S
 }

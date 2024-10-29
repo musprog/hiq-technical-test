@@ -1,7 +1,6 @@
-﻿using RadioControlledCarSimulator.Commands;
-
-namespace RadioControlledCarSimulator.Interface;
+﻿
+namespace RadioControlledCarSimulator.Interfaces;
 public interface ICommand
 {
-    void Execute();
+    bool Execute();
 }

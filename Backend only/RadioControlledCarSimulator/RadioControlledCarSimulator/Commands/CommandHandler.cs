@@ -1,21 +1,22 @@
-﻿
-using RadioControlledCarSimulator.Interface;
+﻿using RadioControlledCarSimulator.Interfaces;
 
-namespace RadioControlledCarSimulator.Commands;
-public class CommandHandler
+namespace RadioControlledCarSimulator.Commands
 {
-    private ICommand? _command;
-
-    public Task SetCommand(ICommand command)
+    public class CommandHandler : ICommandHandler
     {
-        _command = command;
-        return Task.CompletedTask;
-    }
+        private readonly List<ICommand> commands;
+        public CommandHandler() => commands = new List<ICommand>();
 
-    public Task ExcuteCommand()
-    {
-        _command.Execute();
-        return Task.CompletedTask;
-    }
+        public Task<bool> ExecuteCommandsAsync()
+        {
+            var reslut = commands.All(command => command.Execute());
+            return Task.FromResult(reslut);
+        }
 
+        public Task SetCommandAsync(ICommand command)
+        {
+            commands.Add(command);
+            return Task.CompletedTask;
+        }
+    }
 }
