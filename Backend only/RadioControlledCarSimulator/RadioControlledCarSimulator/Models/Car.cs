@@ -1,5 +1,4 @@
-﻿
-using RadioControlledCarSimulator.Utilities;
+﻿using RadioControlledCarSimulator.Utilities;
 
 namespace RadioControlledCarSimulator.Models;
 public class Car
@@ -9,7 +8,9 @@ public class Car
     public Directions Direction { get; private set; }
 
     private readonly Room _room;
-
+    public Car()
+    {
+    }
     public Car(int x, int y, Directions direction, Room room)
     {
         X = x;
@@ -27,7 +28,7 @@ public class Car
     /// Moves the car forward in the current direction.
     /// </summary>
     /// <returns>True if the car successfully moved forward, false otherwise.</returns>
-    public bool MoveForward()
+    public virtual bool MoveForward()
     {
         // Calculate new position based on the current direction
         (int newX, int newY) = Direction switch
@@ -56,7 +57,7 @@ public class Car
     /// Moves the car backward in the opposite direction.
     /// </summary>
     /// <returns>True if the car successfully moved backward, false otherwise.</returns>
-    public bool MoveBackward()
+    public virtual bool MoveBackward()
     {
         // Calculate new position based on the current direction
         (int newX, int newY) = Direction switch
@@ -86,7 +87,7 @@ public class Car
     /// <summary>
     /// Turns the car to the left by 90 degrees.
     /// </summary>
-    public bool TurnLeft()
+    public virtual bool TurnLeft()
     {
         ChangeDirection(-1); // -1 for left turn
         return true;
@@ -95,7 +96,7 @@ public class Car
     /// <summary>
     /// Turns the car to the right by 90 degrees.
     /// </summary>
-    public bool TurnRight()
+    public virtual bool TurnRight()
     {
         ChangeDirection(1); // 1 for right turn
         return true;
@@ -129,7 +130,7 @@ public class Car
         SimulationIO.CarTurning(Side, X, Y, Direction);
     }
 
-    public Task Draw()
+    public virtual Task Draw()
     {
         Task task = Task.Delay(1);
         for (int y = _room.Height - 1; y >= 0; y--)

@@ -1,5 +1,4 @@
-﻿
-namespace RadioControlledCarSimulator.Models;
+﻿namespace RadioControlledCarSimulator.Models;
 public enum Directions
 {
     N,

@@ -1,5 +1,4 @@
-﻿
-using RadioControlledCarSimulator.Interfaces;
+﻿using RadioControlledCarSimulator.Interfaces;
 using RadioControlledCarSimulator.Models;
 
 namespace RadioControlledCarSimulator.Commands;
