@@ -6,8 +6,15 @@ using RadioControlledCarSimulator.Interfaces;
 using RadioControlledCarSimulator.Utilities;
 
 namespace RadioControlledCarSimulator;
+/// <summary>
+/// Represents the entry point of the program.
+/// </summary>
 public class Program
 {
+    /// <summary>
+    /// The main method of the program.
+    /// </summary>
+    /// <param name="args">The command-line arguments.</param>
     public static async Task Main(string[] args)
     {
         // Set up dependency injection and logging

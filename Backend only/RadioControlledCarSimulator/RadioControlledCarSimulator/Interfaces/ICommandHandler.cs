@@ -1,12 +1,20 @@
 ﻿
-using RadioControlledCarSimulator.Models;
+namespace RadioControlledCarSimulator.Interfaces;
 
-namespace RadioControlledCarSimulator.Interfaces
+/// <summary>
+/// Represents a command handler interface.
+/// </summary>
+public interface ICommandHandler
 {
-    public interface ICommandHandler
-    {
-        Task SetCommandAsync(ICommand command);
+    /// <summary>
+    /// Sets the command to be executed.
+    /// </summary>
+    /// <param name="command">The command to be set.</param>
+    Task SetCommandAsync(ICommand command);
 
-        Task<bool> ExecuteCommandsAsync();
-    }
+    /// <summary>
+    /// Executes the commands asynchronously.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    Task<bool> ExecuteCommandsAsync();
 }

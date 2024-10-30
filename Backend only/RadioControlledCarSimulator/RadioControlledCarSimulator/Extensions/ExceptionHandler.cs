@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-
 namespace RadioControlledCarSimulator.Extensions;
+
+/// <summary>
+/// Handles exceptions that occur during the simulation.
+/// </summary>
 public class ExceptionHandler
 {
     private readonly ILogger<ExceptionHandler> _logger;
@@ -10,6 +13,10 @@ public class ExceptionHandler
         _logger = logger;
     }
 
+    /// <summary>
+    /// Handles the specified action asynchronously.
+    /// </summary>
+    /// <param name="action">The action to handle.</param>
     public async Task HandleAsync(Func<Task> action)
     {
         try
